@@ -45,9 +45,11 @@ export default function TicketDetailPage({ params }) {
   }, [router]);
 
   // Fetch Ticket Details, Comments, and Attachments
-  const fetchData = useCallback(async () => {
+  const fetchData = useCallback(async (isInitial = false) => {
     if (!ticketId || !auth.isAuthenticated()) return;
-    setLoading(true);
+    if (isInitial) {
+      setLoading(true);
+    }
     setError(null);
 
     try {
@@ -97,7 +99,7 @@ export default function TicketDetailPage({ params }) {
 
   useEffect(() => {
     if (ticketId && user) {
-      fetchData();
+      fetchData(true);
     }
   }, [ticketId, user, fetchData]);
 
