@@ -81,7 +81,7 @@ public class CommentService {
                 .username(comment.getUser().getUsername())
                 .userRole(comment.getUser().getRole())
                 .commentText(comment.getCommentText())
-                .createdAt(comment.getCreatedAt())
+                .createdAt(comment.getCreatedAt() != null ? comment.getCreatedAt().atZone(java.time.ZoneId.of("UTC")).toInstant() : null)
                 .build();
     }
 }

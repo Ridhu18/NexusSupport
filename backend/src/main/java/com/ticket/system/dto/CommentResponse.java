@@ -6,7 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 @Data
 @Builder
@@ -19,5 +19,5 @@ public class CommentResponse {
     private String username;
     private Role userRole;
     private String commentText;
-    private LocalDateTime createdAt;
+    private Instant createdAt;
 }

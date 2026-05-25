@@ -58,12 +58,23 @@ export default function TicketCard({ ticket }) {
           flexWrap: 'wrap',
           gap: '0.5rem'
         }}>
-          <span style={{
-            fontSize: '0.8rem',
-            color: 'hsl(var(--text-muted))',
-            fontWeight: '700',
-            fontFamily: 'Outfit'
-          }}>#T-{ticket.id}</span>
+          <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+            <span style={{
+              fontSize: '0.8rem',
+              color: 'hsl(var(--text-muted))',
+              fontWeight: '700',
+              fontFamily: 'Outfit'
+            }}>#T-{ticket.id}</span>
+            <span style={{
+              fontSize: '0.75rem',
+              color: 'hsl(var(--text-muted))'
+            }}>•</span>
+            <span style={{
+              fontSize: '0.75rem',
+              color: 'hsl(var(--text-secondary))',
+              fontWeight: '600'
+            }}>{ticket.creatorUsername}</span>
+          </div>
           
           <div style={{
             display: 'flex',

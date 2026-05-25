@@ -184,8 +184,8 @@ public class TicketService {
                 .assigneeEmail(ticket.getAssignee() != null ? ticket.getAssignee().getEmail() : null)
                 .rating(ticket.getRating())
                 .feedback(ticket.getFeedback())
-                .createdAt(ticket.getCreatedAt())
-                .updatedAt(ticket.getUpdatedAt())
+                .createdAt(ticket.getCreatedAt() != null ? ticket.getCreatedAt().atZone(java.time.ZoneId.of("UTC")).toInstant() : null)
+                .updatedAt(ticket.getUpdatedAt() != null ? ticket.getUpdatedAt().atZone(java.time.ZoneId.of("UTC")).toInstant() : null)
                 .build();
     }
 }
