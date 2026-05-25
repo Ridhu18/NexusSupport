@@ -34,14 +34,7 @@ public class TicketService {
         Ticket savedTicket = ticketRepository.save(ticket);
         
         // Notify creator
-        emailService.sendEmail(
-                creator.getEmail(),
-                "Support Ticket Raised: #" + savedTicket.getId(),
-                "Hello " + creator.getUsername() + ",\n\nYour ticket has been raised successfully.\n\n" +
-                "Subject: " + savedTicket.getSubject() + "\n" +
-                "Priority: " + savedTicket.getPriority().name() + "\n" +
-                "Status: OPEN\n\nWe will assign a support agent shortly."
-        );
+        emailService.sendTicketCreatedEmail(creator, savedTicket);
 
         return mapToTicketResponse(savedTicket);
     }
@@ -79,6 +72,8 @@ public class TicketService {
         Ticket ticket = ticketRepository.findById(ticketId)
                 .orElseThrow(() -> new IllegalArgumentException("Ticket not found"));
 
+        Status oldStatus = ticket.getStatus();
+
         boolean isAdmin = user.getRole() == Role.ADMIN;
         boolean isAgent = user.getRole() == Role.SUPPORT_AGENT;
         boolean isCreator = ticket.getCreator().getId().equals(user.getId());
@@ -105,13 +100,7 @@ public class TicketService {
         Ticket updatedTicket = ticketRepository.save(ticket);
 
         // Notify user about status change
-        emailService.sendEmail(
-                updatedTicket.getCreator().getEmail(),
-                "Update on Ticket #" + updatedTicket.getId() + ": Status is now " + updatedTicket.getStatus().name(),
-                "Hello " + updatedTicket.getCreator().getUsername() + ",\n\n" +
-                "The status of your ticket #" + updatedTicket.getId() + " has been updated to: " + updatedTicket.getStatus().name() + ".\n\n" +
-                "Subject: " + updatedTicket.getSubject()
-        );
+        emailService.sendTicketStatusChangedEmail(updatedTicket.getCreator(), updatedTicket, oldStatus);
 
         return mapToTicketResponse(updatedTicket);
     }
@@ -150,24 +139,10 @@ public class TicketService {
 
         // Notify both agent and creator
         if (agent != null) {
-            emailService.sendEmail(
-                    agent.getEmail(),
-                    "Ticket Assigned to You: #" + updatedTicket.getId(),
-                    "Hello " + agent.getUsername() + ",\n\n" +
-                    "Ticket #" + updatedTicket.getId() + " has been assigned to you.\n\n" +
-                    "Subject: " + updatedTicket.getSubject() + "\n" +
-                    "Priority: " + updatedTicket.getPriority().name()
-            );
+            emailService.sendTicketAssignedToAgentEmail(agent, updatedTicket);
         }
-
-        emailService.sendEmail(
-                updatedTicket.getCreator().getEmail(),
-                "Support Agent Assigned: Ticket #" + updatedTicket.getId(),
-                "Hello " + updatedTicket.getCreator().getUsername() + ",\n\n" +
-                "Support Agent " + (agent != null ? agent.getUsername() : "Unassigned") + " is now looking into your ticket.\n\n" +
-                "Subject: " + updatedTicket.getSubject() + "\n" +
-                "Status: " + updatedTicket.getStatus().name()
-        );
+        
+        emailService.sendTicketAssignedToCreatorEmail(updatedTicket.getCreator(), agent, updatedTicket);
 
         return mapToTicketResponse(updatedTicket);
     }

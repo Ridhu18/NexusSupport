@@ -47,23 +47,11 @@ public class CommentService {
         if (user.getId().equals(ticket.getCreator().getId())) {
             // Creator commented -> notify assignee (agent)
             if (ticket.getAssignee() != null) {
-                emailService.sendEmail(
-                        ticket.getAssignee().getEmail(),
-                        "New Comment on Ticket #" + ticket.getId(),
-                        "Hello " + ticket.getAssignee().getUsername() + ",\n\n" +
-                        "The ticket creator (" + user.getUsername() + ") left a new comment on Ticket #" + ticket.getId() + ".\n\n" +
-                        "Comment:\n\"" + savedComment.getCommentText() + "\""
-                );
+                emailService.sendNewCommentEmail(ticket.getAssignee(), user, ticket, savedComment.getCommentText());
             }
         } else {
             // Support Agent or Admin commented -> notify creator
-            emailService.sendEmail(
-                    ticket.getCreator().getEmail(),
-                    "New Comment on Ticket #" + ticket.getId(),
-                    "Hello " + ticket.getCreator().getUsername() + ",\n\n" +
-                    "Support Agent " + user.getUsername() + " left a comment on your Ticket #" + ticket.getId() + ".\n\n" +
-                    "Comment:\n\"" + savedComment.getCommentText() + "\""
-            );
+            emailService.sendNewCommentEmail(ticket.getCreator(), user, ticket, savedComment.getCommentText());
         }
 
         return mapToCommentResponse(savedComment);

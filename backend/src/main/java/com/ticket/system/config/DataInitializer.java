@@ -55,7 +55,19 @@ public class DataInitializer implements CommandLineRunner {
             log.info("   -> [Support Agent] Username: agent  / Password: agent123");
             log.info("   -> [Regular User]  Username: user   / Password: user123");
         } else {
-            log.info("💾 Database already contains records. Skipping seeder.");
+            log.info("💾 Database already contains records. Ensuring test accounts use user's real email with sub-addressing...");
+            userRepository.findByUsername("user").ifPresent(u -> {
+                u.setEmail("ridhamp2005+user@gmail.com");
+                userRepository.save(u);
+            });
+            userRepository.findByUsername("agent").ifPresent(u -> {
+                u.setEmail("ridhamp2005+agent@gmail.com");
+                userRepository.save(u);
+            });
+            userRepository.findByUsername("admin").ifPresent(u -> {
+                u.setEmail("ridhamp2005+admin@gmail.com");
+                userRepository.save(u);
+            });
         }
     }
 }
