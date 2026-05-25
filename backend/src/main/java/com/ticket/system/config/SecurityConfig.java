@@ -56,8 +56,12 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        // Allow common frontend ports (Next.js runs on 3000 by default or configured origins)
-        configuration.setAllowedOrigins(allowedOrigins);
+        // Allow dynamic preview deployments (Vercel) and local environments using origin patterns
+        configuration.setAllowedOriginPatterns(List.of(
+            "http://localhost:[*]",
+            "https://*.vercel.app",
+            "https://*.onrender.com"
+        ));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
         configuration.setAllowedHeaders(List.of("Authorization", "Content-Type", "Cache-Control"));
         configuration.setExposedHeaders(List.of("Authorization"));
